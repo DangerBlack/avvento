@@ -1,0 +1,11 @@
+.git
+.gitignore
+node_modules
+anteprima
+README.md
+*.log
+
+# i contenuti non entrano nell'immagine: si montano a runtime
+dati/calendario.json
+dati/*.bkp
+dati/*.bak

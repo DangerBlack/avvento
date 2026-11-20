@@ -1,0 +1,24 @@
+# contenuti personali: indizi, regali, codici. Non vanno su GitHub.
+dati/calendario.json
+dati/calendario.json.*
+dati/*.bkp
+dati/*.bak
+
+# dipendenze
+node_modules/
+
+# media personali (foto vostre, messaggi vocali)
+pubblico/foto/*
+!pubblico/foto/.gitkeep
+pubblico/audio/*
+!pubblico/audio/.gitkeep
+
+# bozze e prove di stile
+anteprima/
+
+# roba locale
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store

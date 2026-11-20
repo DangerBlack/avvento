@@ -1,0 +1,1139 @@
+/* ============================================================================
+   Calendario dell'Avvento — carta tè, inchiostro, porticine ritagliate.
+   ========================================================================== */
+
+:root {
+  --carta: #f4e9d5;
+  --carta-scura: #e9dcc2;
+  --inchiostro: #3b3226;
+  --inchiostro-tenue: #7d6b57;
+  --oro: #a8804a;
+  --oro-chiaro: #cfae74;
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --testo: "EB Garamond", Georgia, "Times New Roman", serif;
+  --mano: "Caveat", "Bradley Hand", cursive;
+  --ombra: 0 16px 34px -24px rgba(59, 50, 38, 0.55);
+  --ombra-forte: 0 26px 54px -28px rgba(46, 36, 26, 0.6);
+  --arco: 50% 50% 3px 3px / 38% 38% 3px 3px;
+
+  --rosa: #b57f7e;
+  --rosa-scura: #7d524f;
+  --salvia: #7d8f63;
+  --salvia-scura: #4c5c3a;
+  --ocra: #c08f52;
+  --ocra-scura: #7a5a30;
+  --lavanda: #8f87a8;
+  --lavanda-scura: #5c5670;
+  --blu: #7f9aa8;
+  --blu-scura: #4f6672;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--carta);
+  color: var(--inchiostro);
+  font-family: var(--testo);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body.bloccato {
+  overflow: hidden;
+}
+
+/* grana della carta su tutto il foglio */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' seed='7'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+.carta {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.macchia {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.32;
+}
+
+.macchia--1 {
+  width: 62vw;
+  height: 52vw;
+  left: -14vw;
+  top: -12vw;
+  background: radial-gradient(circle, #cdb28a, transparent 68%);
+}
+
+.macchia--2 {
+  width: 54vw;
+  height: 54vw;
+  right: -16vw;
+  bottom: -18vw;
+  background: radial-gradient(circle, #c3a6a0, transparent 68%);
+}
+
+/* ----------------------------------------------------------------- foglio */
+
+.foglio {
+  position: relative;
+  z-index: 2;
+  width: min(980px, 100%);
+  margin: 0 auto;
+  padding: clamp(30px, 5vw, 62px) clamp(16px, 4vw, 40px) 54px;
+}
+
+.intestazione {
+  text-align: center;
+  margin-bottom: clamp(24px, 4vw, 42px);
+}
+
+.frontespizio {
+  display: block;
+  width: clamp(132px, 22vw, 172px);
+  height: auto;
+  margin: 0 auto 6px;
+}
+
+.fregio {
+  display: block;
+  width: clamp(250px, 44vw, 400px);
+  height: auto;
+  margin: 12px auto 0;
+  opacity: 0.94;
+}
+
+.intestazione__occhiello {
+  margin: 0 0 8px;
+  font-family: var(--testo);
+  font-size: 0.72rem;
+  letter-spacing: 0.44em;
+  text-transform: uppercase;
+  color: var(--oro);
+}
+
+.intestazione__titolo {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(2.2rem, 6.2vw, 3.7rem);
+  line-height: 1.06;
+  letter-spacing: 0.005em;
+}
+
+.intestazione__sotto {
+  margin: 12px 0 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.02rem, 2.4vw, 1.22rem);
+  color: var(--inchiostro-tenue);
+}
+
+.intestazione__conteggio {
+  margin: 16px 0 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--inchiostro-tenue);
+  min-height: 1em;
+}
+
+/* ---------------------------------------------------------------- griglia */
+
+.griglia {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(8px, 1.5vw, 15px);
+}
+
+.caricamento,
+.vuoto {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--inchiostro-tenue);
+  padding: 40px 0;
+}
+
+/* ------------------------------------------------------------------ porta */
+
+.porta {
+  --tinta: var(--rosa);
+  --tinta-fondo: var(--rosa-scura);
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  aspect-ratio: 3 / 4;
+  perspective: 780px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.porta:focus-visible {
+  outline: 2px solid var(--oro);
+  outline-offset: 5px;
+  border-radius: var(--arco);
+}
+
+/* il buio dietro il battente */
+.porta__nicchia {
+  position: absolute;
+  inset: 22.8% 19.6% 9.8%;
+  border-radius: var(--arco);
+  background: radial-gradient(110% 92% at 50% 80%, #6b5442 0%, #3d2f26 58%, #241c17 100%);
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.5);
+}
+
+.porta__telaio {
+  position: absolute;
+  inset: 0;
+}
+
+.porta__anta {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.22, 0.7, 0.18, 1), filter 0.45s;
+}
+
+.arte {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  isolation: isolate;
+}
+
+.arte__numero {
+  font-family: var(--serif);
+  font-size: 54px;
+  font-weight: 500;
+  fill: #3a2f22;
+  fill-opacity: 0.7;
+}
+
+/* sigillo di cera */
+.porta__segnale {
+  position: absolute;
+  left: 50%;
+  bottom: 8.5%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #b2685f, #8a3a33);
+  box-shadow: 0 2px 4px -1px rgba(59, 50, 38, 0.5);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.35s, transform 0.35s;
+}
+
+.porta.is-bloccata .porta__segnale {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.porta.is-bloccata .porta__anta {
+  filter: saturate(0.66) sepia(0.1) brightness(1.02);
+}
+
+.porta.is-bloccata .arte__numero {
+  fill-opacity: 0.42;
+}
+
+.porta.is-bloccata {
+  cursor: default;
+}
+
+.porta.is-trovata .porta__segnale,
+.porta.is-visitata .porta__segnale {
+  opacity: 0;
+}
+
+/* porticine già scoperte: socchiuse, con la luce dentro */
+.porta.is-trovata .porta__anta {
+  transform: rotateY(-24deg);
+}
+
+.porta.is-visitata .porta__anta {
+  transform: rotateY(-38deg);
+}
+
+.porta:not(.is-bloccata):hover {
+  transform: translateY(-4px);
+}
+
+.porta:not(.is-bloccata):hover .porta__anta {
+  transform: rotateY(-9deg);
+}
+
+.porta.is-trovata:hover .porta__anta {
+  transform: rotateY(-34deg);
+}
+
+.porta:active {
+  transform: translateY(-1px) scale(0.995);
+}
+
+/* oggi */
+.porta.is-oggi::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: var(--arco);
+  border: 1px dashed color-mix(in srgb, var(--oro) 65%, transparent);
+  animation: respiro 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes respiro {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.02);
+  }
+}
+
+.scuoti {
+  animation: scuoti 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes scuoti {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  80% {
+    transform: translateX(3px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-5px);
+  }
+  40%,
+  60% {
+    transform: translateX(5px);
+  }
+}
+
+/* ------------------------------------------------------------------ velo */
+
+.velo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-items: center;
+  padding: 14px;
+  background: rgba(46, 36, 26, 0.62);
+  backdrop-filter: blur(6px) saturate(0.85);
+  -webkit-backdrop-filter: blur(6px) saturate(0.85);
+  animation: comparsa 0.3s ease-out;
+  overflow-y: auto;
+}
+
+.velo[hidden] {
+  display: none;
+}
+
+@keyframes comparsa {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.teatro {
+  width: 100%;
+  max-width: 420px;
+  min-width: 0;
+  max-height: calc(100dvh - 28px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+  padding: 6px 0;
+}
+
+/* ----------------------------------------------------------- porta grande */
+
+.teatro__scena {
+  position: relative;
+  width: min(206px, 50vw);
+  aspect-ratio: 3 / 4;
+  perspective: 1150px;
+  flex: none;
+}
+
+.porta-grande {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.porta-grande__nicchia {
+  position: absolute;
+  inset: 22.8% 19.6% 9.8%;
+  border-radius: var(--arco);
+  background: radial-gradient(115% 88% at 50% 78%, #6d5643 0%, #3a2c23 58%, #221a15 100%);
+  box-shadow: inset 0 0 26px rgba(0, 0, 0, 0.62), var(--ombra-forte);
+  overflow: hidden;
+}
+
+.porta-grande__nicchia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 52% 62%, rgba(255, 226, 170, 0.34), transparent 64%);
+  opacity: 0;
+  transition: opacity 1.1s ease 0.35s;
+}
+
+.porta-grande.is-aperta .porta-grande__nicchia::after {
+  opacity: 1;
+}
+
+.porta-grande__telaio {
+  position: absolute;
+  inset: 0;
+}
+
+.porta-grande__anta {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  transform-style: preserve-3d;
+  transition: transform 1.35s cubic-bezier(0.3, 0.72, 0.16, 1);
+}
+
+.porta-grande.is-aperta .porta-grande__anta {
+  transform: rotateY(-74deg);
+}
+
+.porta-grande.is-sigillata .porta-grande__anta {
+  filter: saturate(0.4) brightness(1.05) contrast(0.92);
+}
+
+.porta-grande .arte__numero {
+  font-size: 50px;
+}
+
+.teatro__dida {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  align-items: baseline;
+  gap: 4px 10px;
+  max-width: 100%;
+  color: #f1e4cb;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.teatro__giorno {
+  font-family: var(--serif);
+  text-transform: none;
+  letter-spacing: 0.03em;
+  font-size: 1.08rem;
+  color: #f7ecd6;
+}
+
+.teatro__stato {
+  opacity: 0.55;
+}
+
+/* --------------------------------------------------------------- reperto */
+
+#reperto {
+  position: relative;
+  width: 100%;
+  background: #fbf3e2;
+  border: 1px solid color-mix(in srgb, var(--oro) 26%, transparent);
+  border-radius: 3px;
+  box-shadow: var(--ombra-forte);
+  padding: clamp(20px, 5vw, 30px);
+  animation: esci 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: hidden;
+}
+
+#reperto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' seed='11'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+@keyframes esci {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------- indizio */
+
+.pergamena {
+  text-align: center;
+}
+
+.pergamena__etichetta {
+  margin: 0 0 14px;
+  font-size: 0.62rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--oro);
+}
+
+.pergamena__testo {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.18rem, 4.4vw, 1.44rem);
+  line-height: 1.48;
+  color: var(--inchiostro);
+}
+
+.pergamena__firma {
+  margin-top: 14px;
+  color: color-mix(in srgb, var(--oro) 60%, transparent);
+  font-size: 0.76rem;
+}
+
+.cerca {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px dashed color-mix(in srgb, var(--oro) 38%, transparent);
+}
+
+.cerca__etichetta {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.78rem;
+  color: var(--inchiostro-tenue);
+  text-align: center;
+}
+
+.cerca__riga {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.codice {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  font-family: var(--testo);
+  font-size: 1.06rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--inchiostro);
+  background: #fffdf6;
+  border: 1px solid color-mix(in srgb, var(--oro) 38%, transparent);
+  border-radius: 2px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.codice::placeholder {
+  color: color-mix(in srgb, var(--inchiostro-tenue) 40%, transparent);
+  letter-spacing: 0.3em;
+}
+
+.codice:focus {
+  outline: none;
+  border-color: var(--oro);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--oro) 16%, transparent);
+}
+
+.cerca__bottone {
+  padding: 10px 20px;
+  font-family: var(--testo);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fdf6e6;
+  background: var(--oro);
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+
+.cerca__bottone:hover {
+  filter: brightness(1.08);
+}
+
+.cerca__aiuto {
+  margin: 10px 0 0;
+  font-size: 0.72rem;
+  text-align: center;
+  color: var(--inchiostro-tenue);
+  opacity: 0.8;
+}
+
+/* ---------------------------------------------------------------- voce */
+
+.voce {
+  text-align: center;
+}
+
+.voce__etichetta {
+  margin: 0 0 12px;
+  font-size: 0.62rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--oro);
+}
+
+.voce__testo {
+  margin: 14px 0 0;
+  font-family: var(--serif);
+  font-size: 1.06rem;
+  line-height: 1.55;
+  color: var(--inchiostro-tenue);
+}
+
+.lettore {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px 8px 8px;
+  border: 1px solid color-mix(in srgb, var(--oro) 32%, transparent);
+  border-radius: 999px;
+  background: #fffdf6;
+}
+
+.lettore[data-stato="errore"] {
+  opacity: 0.55;
+}
+
+.lettore__pulsante {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--inchiostro);
+  color: #fbf3e2;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.lettore__pulsante:hover {
+  background: var(--oro);
+}
+
+.lettore__pulsante:active {
+  transform: scale(0.95);
+}
+
+.lettore__pulsante svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.lettore__barra {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.lettore__solco {
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 2px;
+  margin-top: -1px;
+  background: color-mix(in srgb, var(--oro) 26%, transparent);
+  border-radius: 2px;
+}
+
+.lettore__riempimento {
+  position: absolute;
+  inset: 50% auto auto 0;
+  height: 2px;
+  margin-top: -1px;
+  width: 0;
+  background: var(--oro);
+  border-radius: 2px;
+}
+
+.lettore__tempo {
+  flex: none;
+  font-family: var(--testo);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--inchiostro-tenue);
+  min-width: 4.4em;
+  text-align: right;
+}
+
+/* --------------------------------------------------------------- sigillo */
+
+.sigillo {
+  text-align: center;
+  padding: 4px 0 2px;
+}
+
+.sigillo__luna {
+  display: block;
+  font-size: 1.5rem;
+  color: color-mix(in srgb, var(--oro) 65%, var(--inchiostro-tenue));
+}
+
+.sigillo__testo {
+  margin: 10px 0 4px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.06rem;
+  color: var(--inchiostro-tenue);
+}
+
+.sigillo__grande {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  color: var(--inchiostro);
+}
+
+.sigillo__nota {
+  margin: 12px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--inchiostro-tenue);
+}
+
+/* ---------------------------------------------------------------- lettera */
+
+.lettera__titolo {
+  margin: 0 0 14px;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.06rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  color: color-mix(in srgb, var(--inchiostro) 76%, var(--oro));
+}
+
+.lettera__testo {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 3.8vw, 1.22rem);
+  line-height: 1.7;
+  color: var(--inchiostro);
+}
+
+.lettera__testo::first-letter {
+  float: left;
+  margin: 4px 8px 0 0;
+  font-size: 2.7em;
+  line-height: 0.8;
+  color: var(--oro);
+}
+
+.teatro__coppia {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(4px, 1.6vw, 16px);
+  max-width: 100%;
+}
+
+.teatro__topina {
+  width: clamp(70px, 19vw, 122px);
+  height: auto;
+  flex: none;
+  /* la porta ha 6% di margine sotto la cornice: allineo i piedi alla soglia */
+  margin-bottom: 6.5%;
+  opacity: 0.97;
+  /* specchiata: guarda verso la porticina invece che verso il bordo */
+  transform: scaleX(-1);
+}
+
+.lettera__ornamento {
+  display: block;
+  width: clamp(84px, 20vw, 116px);
+  height: auto;
+  margin: 10px 0 0 auto;
+}
+
+.lettera__firma {
+  margin: 16px 0 0;
+  font-family: var(--mano);
+  font-size: 1.34rem;
+  text-align: right;
+  color: var(--inchiostro-tenue);
+}
+
+.lettera__bottone {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 9px 18px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #fdf6e6;
+  background: var(--oro);
+  border-radius: 2px;
+  transition: filter 0.2s;
+}
+
+.lettera__bottone:hover {
+  filter: brightness(1.08);
+}
+
+.lettera__bottone.is-vuoto {
+  background: none;
+  border: 1px dashed color-mix(in srgb, var(--oro) 50%, transparent);
+  color: var(--inchiostro-tenue);
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------ foto */
+
+.foto {
+  margin: 0;
+  padding: 12px 12px 6px;
+  background: #fffdf6;
+  border: 1px solid rgba(59, 50, 38, 0.08);
+  box-shadow: 0 14px 26px -20px rgba(46, 36, 26, 0.7);
+  transform: rotate(-1.1deg);
+  text-align: center;
+}
+
+.foto img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--carta-scura);
+}
+
+.foto__vuota {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  min-height: 150px;
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--inchiostro-tenue);
+  background: linear-gradient(150deg, var(--carta-scura), #e3d2b4);
+}
+
+.foto.senza-foto img {
+  display: none;
+}
+
+.foto.senza-foto .foto__vuota {
+  display: flex;
+}
+
+.foto figcaption {
+  margin-top: 9px;
+  font-family: var(--mano);
+  font-size: 1.18rem;
+  line-height: 1.35;
+  color: var(--inchiostro-tenue);
+}
+
+.foto.senza-foto figcaption::before {
+  content: "manca la foto · ";
+  font-family: var(--testo);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+/* ----------------------------------------------------------------- buono */
+
+.buono {
+  position: relative;
+  padding: 20px 20px 15px;
+  text-align: center;
+  background: linear-gradient(170deg, #fffdf6, #f3e6cc);
+  border: 1px solid color-mix(in srgb, var(--oro) 42%, transparent);
+  border-radius: 2px;
+}
+
+.buono__etichetta {
+  margin: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.46em;
+  text-transform: uppercase;
+  color: var(--oro);
+}
+
+.buono__titolo {
+  margin: 8px 0 10px;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(1.42rem, 5.8vw, 1.86rem);
+  line-height: 1.16;
+}
+
+.buono__testo {
+  margin: 0 auto;
+  max-width: 30ch;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--inchiostro-tenue);
+}
+
+.buono__strappo {
+  position: relative;
+  margin: 18px 0 10px;
+  border-top: 1px dashed color-mix(in srgb, var(--oro) 55%, transparent);
+}
+
+.buono__strappo::after {
+  content: "✂";
+  position: absolute;
+  right: 0;
+  top: -0.74em;
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--oro) 75%, transparent);
+  background: #f6ead1;
+  padding-left: 4px;
+}
+
+.buono__validita {
+  margin: 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--inchiostro-tenue);
+}
+
+/* ------------------------------------------------------------- scintille */
+
+.scintilla {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--oro-chiaro);
+  pointer-events: none;
+  animation: vola 1.7s ease-out forwards;
+  animation-delay: var(--ritardo, 0ms);
+  opacity: 0;
+}
+
+@keyframes vola {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.4);
+  }
+  22% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx, 0), var(--dy, -60px)) scale(1.1);
+  }
+}
+
+/* ---------------------------------------------------------------- bottoni */
+
+.teatro__chiudi {
+  padding: 8px 22px;
+  font-family: var(--testo);
+  font-size: 0.68rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #f7ecd6;
+  background: none;
+  border: 1px solid rgba(247, 236, 214, 0.32);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s, border-color 0.25s;
+  flex: none;
+}
+
+.teatro__chiudi:hover {
+  background: rgba(247, 236, 214, 0.1);
+  border-color: rgba(247, 236, 214, 0.55);
+}
+
+/* ------------------------------------------------------------------ avviso */
+
+.avviso {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  z-index: 80;
+  transform: translate(-50%, 12px);
+  max-width: min(420px, calc(100vw - 30px));
+  padding: 11px 20px;
+  font-size: 0.84rem;
+  text-align: center;
+  color: #f9efdb;
+  background: rgba(46, 36, 26, 0.95);
+  border: 1px solid rgba(207, 174, 116, 0.26);
+  border-radius: 999px;
+  box-shadow: 0 18px 34px -20px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.avviso.is-visibile {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ------------------------------------------------------------------ nastro */
+
+.nastro {
+  position: relative;
+  z-index: 3;
+  margin: 0;
+  padding: 7px 12px;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #6a4b2a;
+  background: color-mix(in srgb, var(--oro-chiaro) 55%, #f6ead2);
+  border-bottom: 1px solid color-mix(in srgb, var(--oro) 30%, transparent);
+}
+
+/* ------------------------------------------------------------------- piede */
+
+.piede {
+  margin-top: clamp(30px, 5vw, 46px);
+  text-align: center;
+}
+
+.piede__nota {
+  margin: 0 auto;
+  max-width: 36ch;
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: var(--inchiostro-tenue);
+  opacity: 0.9;
+}
+
+.piede__azzera {
+  margin-top: 14px;
+  padding: 4px 6px;
+  font-family: var(--testo);
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--inchiostro-tenue);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.25s, border-color 0.25s;
+}
+
+.piede__azzera:hover {
+  opacity: 1;
+  border-bottom-color: color-mix(in srgb, var(--oro) 55%, transparent);
+}
+
+/* ----------------------------------------------------------------- mobile */
+
+@media (max-width: 640px) {
+  .griglia {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .teatro__scena {
+    width: min(158px, 40vw);
+  }
+
+  #reperto {
+    padding: 20px 18px;
+  }
+}
+
+@media (max-height: 720px) and (min-width: 641px) {
+  .teatro__scena {
+    width: min(150px, 38vw);
+  }
+}
+
+/* -------------------------------------------------------- movimento ridotto */
+
+@media (prefers-reduced-motion: reduce) {
+  .porta.is-oggi::after {
+    animation: none;
+  }
+
+  .porta,
+  .porta__anta,
+  .porta-grande__anta,
+  .scintilla,
+  #reperto {
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+  }
+}

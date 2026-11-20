@@ -1,0 +1,33 @@
+services:
+  avvento:
+    build: .
+    image: avvento
+    container_name: avvento
+    restart: unless-stopped
+    ports:
+      - "8477:8477"
+    environment:
+      PORT: "8477"
+      # 0 = le pagine di stampa non esistono (consigliato se il sito è pubblico)
+      AVVENTO_STAMPA: "${AVVENTO_STAMPA:-0}"
+      AVVENTO_STAMPA_PAROLA: "${AVVENTO_STAMPA_PAROLA:-}"
+      # AVVENTO_PROVA: "1"          # tutte le porticine aperte, per lavorarci
+      # AVVENTO_OGGI: "2026-12-20"  # finge che sia un altro giorno
+    volumes:
+      # i contenuti restano fuori dall'immagine
+      - ./dati:/app/dati:ro
+      - ./pubblico/foto:/app/pubblico/foto:ro
+      - ./pubblico/audio:/app/pubblico/audio:ro
+    # dietro Traefik sulla rete esterna, decommenta e togli "ports":
+    #
+    # networks: [traefik]
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.http.routers.avvento.rule=Host(`avvento.example.it`)
+    #   - traefik.http.routers.avvento.entrypoints=websecure
+    #   - traefik.http.routers.avvento.tls.certresolver=myresolver
+    #   - traefik.http.services.avvento.loadbalancer.server.port=8477
+    #
+# networks:
+#   traefik:
+#     external: true

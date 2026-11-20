@@ -1,0 +1,291 @@
+{
+  "versione": 1,
+  "anno": 2026,
+  "base": "http://localhost:8477",
+  "titolo": "Calendario dell'Avvento",
+  "sottotitolo": "venticinque porticine, venticinque nascondigli",
+  "destinataria": "Per te",
+  "firma": "— il tuo nome",
+  "giorni": [
+    {
+      "giorno": 1,
+      "codice": "ALBA",
+      "indizio": "Indizio del giorno 1: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "lettera",
+        "titolo": "Titolo della lettera",
+        "testo": "Il testo della lettera del giorno 1."
+      }
+    },
+    {
+      "giorno": 2,
+      "codice": "ARCO",
+      "indizio": "Indizio del giorno 2: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "foto",
+        "titolo": "Una foto",
+        "immagine": "foto/02.jpg",
+        "didascalia": "La didascalia della foto."
+      }
+    },
+    {
+      "giorno": 3,
+      "codice": "CANE",
+      "indizio": "Indizio del giorno 3: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "buono",
+        "titolo": "Un buono",
+        "testo": "Cosa contiene questo buono.",
+        "validita": "quando vuoi"
+      }
+    },
+    {
+      "giorno": 4,
+      "codice": "CORO",
+      "indizio": "Indizio del giorno 4: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "playlist",
+        "titolo": "Una playlist",
+        "testo": "Perché questa musica.",
+        "link": "",
+        "etichettaLink": "Apri la playlist"
+      }
+    },
+    {
+      "giorno": 5,
+      "codice": "DADO",
+      "indizio": "Indizio del giorno 5: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "audio",
+        "titolo": "Un messaggio",
+        "file": "audio/05.mp3",
+        "etichetta": "una voce",
+        "testo": "Due parole prima di ascoltare."
+      }
+    },
+    {
+      "giorno": 6,
+      "codice": "ERBA",
+      "indizio": "Indizio del giorno 6: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "lettera",
+        "titolo": "Titolo della lettera",
+        "testo": "Il testo della lettera del giorno 6."
+      }
+    },
+    {
+      "giorno": 7,
+      "codice": "FARO",
+      "indizio": "Indizio del giorno 7: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "foto",
+        "titolo": "Una foto",
+        "immagine": "foto/07.jpg",
+        "didascalia": "La didascalia della foto."
+      }
+    },
+    {
+      "giorno": 8,
+      "codice": "FATA",
+      "indizio": "Indizio del giorno 8: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "buono",
+        "titolo": "Un buono",
+        "testo": "Cosa contiene questo buono.",
+        "validita": "quando vuoi"
+      }
+    },
+    {
+      "giorno": 9,
+      "codice": "GOLA",
+      "indizio": "Indizio del giorno 9: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "playlist",
+        "titolo": "Una playlist",
+        "testo": "Perché questa musica.",
+        "link": "",
+        "etichettaLink": "Apri la playlist"
+      }
+    },
+    {
+      "giorno": 10,
+      "codice": "LAGO",
+      "indizio": "Indizio del giorno 10: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "audio",
+        "titolo": "Un messaggio",
+        "file": "audio/10.mp3",
+        "etichetta": "una voce",
+        "testo": "Due parole prima di ascoltare."
+      }
+    },
+    {
+      "giorno": 11,
+      "codice": "LUPO",
+      "indizio": "Indizio del giorno 11: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "lettera",
+        "titolo": "Titolo della lettera",
+        "testo": "Il testo della lettera del giorno 11."
+      }
+    },
+    {
+      "giorno": 12,
+      "codice": "NAVE",
+      "indizio": "Indizio del giorno 12: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "foto",
+        "titolo": "Una foto",
+        "immagine": "foto/12.jpg",
+        "didascalia": "La didascalia della foto."
+      }
+    },
+    {
+      "giorno": 13,
+      "codice": "NERO",
+      "indizio": "Indizio del giorno 13: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "buono",
+        "titolo": "Un buono",
+        "testo": "Cosa contiene questo buono.",
+        "validita": "quando vuoi"
+      }
+    },
+    {
+      "giorno": 14,
+      "codice": "OCRA",
+      "indizio": "Indizio del giorno 14: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "playlist",
+        "titolo": "Una playlist",
+        "testo": "Perché questa musica.",
+        "link": "",
+        "etichettaLink": "Apri la playlist"
+      }
+    },
+    {
+      "giorno": 15,
+      "codice": "ORMA",
+      "indizio": "Indizio del giorno 15: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "audio",
+        "titolo": "Un messaggio",
+        "file": "audio/15.mp3",
+        "etichetta": "una voce",
+        "testo": "Due parole prima di ascoltare."
+      }
+    },
+    {
+      "giorno": 16,
+      "codice": "PINO",
+      "indizio": "Indizio del giorno 16: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "lettera",
+        "titolo": "Titolo della lettera",
+        "testo": "Il testo della lettera del giorno 16."
+      }
+    },
+    {
+      "giorno": 17,
+      "codice": "REMO",
+      "indizio": "Indizio del giorno 17: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "foto",
+        "titolo": "Una foto",
+        "immagine": "foto/17.jpg",
+        "didascalia": "La didascalia della foto."
+      }
+    },
+    {
+      "giorno": 18,
+      "codice": "SETA",
+      "indizio": "Indizio del giorno 18: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "buono",
+        "titolo": "Un buono",
+        "testo": "Cosa contiene questo buono.",
+        "validita": "quando vuoi"
+      }
+    },
+    {
+      "giorno": 19,
+      "codice": "TANA",
+      "indizio": "Indizio del giorno 19: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "playlist",
+        "titolo": "Una playlist",
+        "testo": "Perché questa musica.",
+        "link": "",
+        "etichettaLink": "Apri la playlist"
+      }
+    },
+    {
+      "giorno": 20,
+      "codice": "TELA",
+      "indizio": "Indizio del giorno 20: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "audio",
+        "titolo": "Un messaggio",
+        "file": "audio/20.mp3",
+        "etichetta": "una voce",
+        "testo": "Due parole prima di ascoltare."
+      }
+    },
+    {
+      "giorno": 21,
+      "codice": "UOVO",
+      "indizio": "Indizio del giorno 21: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "lettera",
+        "titolo": "Titolo della lettera",
+        "testo": "Il testo della lettera del giorno 21."
+      }
+    },
+    {
+      "giorno": 22,
+      "codice": "VASO",
+      "indizio": "Indizio del giorno 22: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "foto",
+        "titolo": "Una foto",
+        "immagine": "foto/22.jpg",
+        "didascalia": "La didascalia della foto."
+      }
+    },
+    {
+      "giorno": 23,
+      "codice": "ZERO",
+      "indizio": "Indizio del giorno 23: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "buono",
+        "titolo": "Un buono",
+        "testo": "Cosa contiene questo buono.",
+        "validita": "quando vuoi"
+      }
+    },
+    {
+      "giorno": 24,
+      "codice": "MUTO",
+      "indizio": "Indizio del giorno 24: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "playlist",
+        "titolo": "Una playlist",
+        "testo": "Perché questa musica.",
+        "link": "",
+        "etichettaLink": "Apri la playlist"
+      }
+    },
+    {
+      "giorno": 25,
+      "codice": "NODO",
+      "indizio": "Indizio del giorno 25: scrivi qui dove si nasconde il cioccolatino.",
+      "svela": {
+        "tipo": "audio",
+        "titolo": "Un messaggio",
+        "file": "audio/25.mp3",
+        "etichetta": "una voce",
+        "testo": "Due parole prima di ascoltare."
+      }
+    }
+  ]
+}

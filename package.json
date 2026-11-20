@@ -1,0 +1,18 @@
+{
+  "name": "avvento",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Calendario dell'avvento con porticine sbloccate a data e QR nascosti in casa",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "prova": "AVVENTO_PROVA=1 node server.js"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}

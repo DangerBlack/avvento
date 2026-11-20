@@ -208,6 +208,10 @@ docker compose up -d --build
 contenuti e i media restano fuori dall'immagine (e fuori da Git). Il `.dockerignore` esclude
 `dati/calendario.json`, quindi l'immagine **non** contiene i regali.
 
+L'immagine non copia affatto `dati/`: se avvii il container senza quel volume, esce subito con
+`Non riesco a partire: dati/calendario.json non va bene` — è voluto, meglio un errore chiaro che
+un calendario che parte con contenuti sbagliati.
+
 Per un deploy dietro Traefik togli `ports:` e decommenta la parte `networks`/`labels` nel compose.
 
 ### Traefik (file provider)

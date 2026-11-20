@@ -503,7 +503,11 @@ async function gestisci(req, res) {
   }
 
   const pagine = {
-    "/stampa/biglietti.html": () => Stampa.biglietti(dati, baseQr(), CHIAVE),
+    "/stampa/biglietti.html": () =>
+      Stampa.biglietti(dati, baseQr(), CHIAVE, {
+        stile: url.searchParams.get("qr"),
+        mm: url.searchParams.get("mm"),
+      }),
     "/stampa/promemoria.html": () => Stampa.promemoria(dati),
     "/stampa/indovinelli.html": () => Stampa.indovinelli(dati),
   };

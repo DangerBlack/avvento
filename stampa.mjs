@@ -41,7 +41,7 @@ const stile = `
   .biglietto__giorno { font-size:11pt; line-height:1; text-align:center; }
   .biglietto__giorno small { display:block; font-family:system-ui, sans-serif; font-size:4.4pt;
                letter-spacing:0.28em; text-transform:uppercase; color:#a08a76; margin-top:1mm; }
-  .biglietto__qr { width:28mm; height:28mm; }
+  .biglietto__qr { width:var(--qr, 28mm); height:var(--qr, 28mm); }
   .biglietto__qr svg { width:100%; height:100%; display:block; }
   .biglietto__codice { font-family:system-ui, sans-serif; font-weight:700; font-size:7.6pt;
                letter-spacing:0.3em; text-indent:0.3em; }
@@ -79,7 +79,8 @@ ${corpo}
 
 /* ------------------------------------------------------------------ QR */
 
-async function qrInline(indirizzo) {
+async function qrInline(indirizzo, opzioni) {
+  const stile = opzioni && opzioni.stile === "quadro" ? "quadro" : "tondo";
   try {
     const { default: QRCode } = await import("qrcode");
     const qr = QRCode.create(indirizzo, { errorCorrectionLevel: "Q" });
@@ -110,12 +111,16 @@ async function qrInline(indirizzo) {
       pezzi += `<rect x="${X + 2}" y="${Y + 2}" width="3" height="3" rx="0.8" fill="#241b18"/>`;
     }
 
-    // puntini, con raggio appena sotto metà modulo: restano separati ma pieni
+    // moduli: tondi (predefinito) o quadrati arrotondati
     const r = 0.47;
     for (let y = 0; y < n; y++) {
       for (let x = 0; x < n; x++) {
         if (!buio(x, y) || inOcchio(x, y)) continue;
-        pezzi += `<circle cx="${x + margine + 0.5}" cy="${y + margine + 0.5}" r="${r}" fill="#241b18"/>`;
+        if (stile === "quadro") {
+          pezzi += `<rect x="${x + margine + 0.04}" y="${y + margine + 0.04}" width="0.92" height="0.92" rx="0.26" fill="#241b18"/>`;
+        } else {
+          pezzi += `<circle cx="${x + margine + 0.5}" cy="${y + margine + 0.5}" r="${r}" fill="#241b18"/>`;
+        }
       }
     }
 
@@ -129,12 +134,14 @@ async function qrInline(indirizzo) {
 
 /* ------------------------------------------------------------ le pagine */
 
-export async function biglietti(dati, base, chiave) {
+export async function biglietti(dati, base, chiave, opzioni) {
+  const stile = opzioni && opzioni.stile === "quadro" ? "quadro" : "tondo";
+  const mm = Math.min(36, Math.max(20, Number(opzioni && opzioni.mm) || 28));
   const righe = [];
   for (const g of giornIOrdinati(dati)) {
     const codice = String(g.codice).toUpperCase();
     const indirizzo = `${base}/t/${codice}` + (chiave ? `?k=${encodeURIComponent(chiave)}` : "");
-    const svg = await qrInline(indirizzo);
+    const svg = await qrInline(indirizzo, { stile });
     righe.push(`  <div class="biglietto">
     <span class="biglietto__giorno">${g.giorno}<small>dicembre</small></span>
     <div class="biglietto__qr">${svg}</div>
@@ -149,9 +156,11 @@ export async function biglietti(dati, base, chiave) {
   Stampa al 100%, senza "adatta alla pagina", su carta opaca: se è lucida il riflesso può
   impedire la lettura del QR.<br />
   <strong>Questi QR puntano a <code>${esc(base)}</code></strong> — se cambi porta o dominio
-  (campo <code>base</code> in calendario.json), ristampali.
+  (campo <code>base</code> in calendario.json), ristampali.<br />
+  <strong>Stile:</strong> ${stile === "quadro" ? "quadrati arrotondati" : "puntini tondi"} · <strong>lato:</strong> ${mm} mm
+  · per cambiare: <code>?qr=quadro</code>, <code>?mm=32</code> in fondo all'indirizzo.
 </p>
-<div class="fogli">
+<div class="fogli" style="--qr:${mm}mm">
 ${righe.join("\n")}
 </div>`
   );
@@ -230,6 +239,13 @@ ${linkIngresso ? `<div style="padding:12px 16px;margin:0 0 14px;border:1px solid
   <div style="font-family:system-ui,sans-serif;font-size:8pt;color:#7d6b57;margin-top:6px">contiene la chiave: si usa una volta e resta in un cookie per 60 giorni</div>
 </div>` : ""}
 <a href="/stampa/biglietti.html" style="display:block;padding:14px 18px;margin:0 0 10px;text-decoration:none;color:#3b3226;border:1px solid rgba(168,128,74,.35);background:#fbf3e2">Biglietti per i cioccolatini<span style="display:block;font-family:system-ui,sans-serif;font-size:.8em;color:#7d6b57">25 quadrati da 50 mm con QR, giorno e codice</span></a>
+<div style="margin:-4px 0 12px;padding-left:18px;font-family:system-ui,sans-serif;font-size:.82em;color:#7d6b57">
+  stile:
+  <a href="/stampa/biglietti.html?qr=tondo&amp;mm=28" style="color:#6b4b22">puntini 28 mm</a> ·
+  <a href="/stampa/biglietti.html?qr=quadro&amp;mm=28" style="color:#6b4b22">quadrati 28 mm</a> ·
+  <a href="/stampa/biglietti.html?qr=tondo&amp;mm=32" style="color:#6b4b22">puntini 32 mm</a> ·
+  <a href="/stampa/biglietti.html?qr=quadro&amp;mm=24" style="color:#6b4b22">quadrati 24 mm</a>
+</div>
 <a href="/stampa/promemoria.html" style="display:block;padding:14px 18px;margin:0 0 10px;text-decoration:none;color:#3b3226;border:1px solid rgba(168,128,74,.35);background:#fbf3e2">Promemoria dei nascondigli<span style="display:block;font-family:system-ui,sans-serif;font-size:.8em;color:#7d6b57">indovinello, codice e spazio per scrivere dove l'hai messo</span></a>
 <a href="/stampa/indovinelli.html" style="display:block;padding:14px 18px;text-decoration:none;color:#3b3226;border:1px solid rgba(168,128,74,.35);background:#fbf3e2">Indovinelli e codici<span style="display:block;font-family:system-ui,sans-serif;font-size:.8em;color:#7d6b57">spoiler completo, il copione per te</span></a>
 <a href="/stampa/calendario.json" style="display:block;padding:14px 18px;margin-top:10px;text-decoration:none;color:#3b3226;border:1px solid rgba(168,128,74,.35);background:#fbf3e2">calendario.json<span style="display:block;font-family:system-ui,sans-serif;font-size:.8em;color:#7d6b57">il file dei contenuti</span></a>`

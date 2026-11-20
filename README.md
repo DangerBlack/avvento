@@ -146,8 +146,33 @@ Senza password, o con quella sbagliata, risponde **404** — non 401, così non 
 | `AVVENTO_OGGI` | – | `AAAA-MM-GG`, finge che sia un altro giorno |
 | `AVVENTO_STAMPA` | – | `1` = attiva le pagine di stampa |
 | `AVVENTO_STAMPA_PAROLA` | – | password (via cookie) per le pagine di stampa |
+| `AVVENTO_CHIAVE` | – | chiave d'accesso al sito (UUID). Senza, il sito è aperto a chiunque conosca l'indirizzo |
 
 ---
+
+## Chiave d'accesso
+
+Il codice a quattro lettere non è un segreto: sta scritto sul cioccolatino. Da solo non basta a
+proteggere un sito pubblico, perché chiunque potrebbe provare i codici e sbloccare i giorni. Per
+questo l'accesso al calendario è protetto da una chiave separata:
+
+```bash
+node -e "console.log(crypto.randomUUID())"
+# → 81168a74-7d1e-46d2-8e63-07e67db4e0f6
+AVVENTO_CHIAVE=quella-sopra
+```
+
+Come funziona:
+
+- il link d'ingresso è `https://…/?k=LA-CHIAVE`; si usa **una volta**, poi resta in un cookie
+  `HttpOnly` per 60 giorni (e l'indirizzo si ripulisce, la chiave non resta nella cronologia)
+- **i QR la contengono**: ogni biglietto punta a `…/t/CODICE?k=LA-CHIAVE`, così scansionare un
+  cioccolatino autentica anche il telefono
+- senza chiave un browser vede solo una pagina con il campo "incolla la chiave"; API e file
+  rispondono **404**
+- la pagina `/stampa` mostra il link d'ingresso pronto da copiare
+
+Cambiare la chiave invalida i cookie **e i QR già stampati**: se la cambi, ristampa i biglietti.
 
 ## Deploy
 
@@ -254,6 +279,7 @@ caccia.
 
 | | |
 | --- | --- |
+| tutto il sito | 404 senza chiave (o pagina d'ingresso, se navighi con un browser) |
 | `/` | la pagina: 25 porticine, nessun contenuto |
 | `/api/calendario` | solo `giorno` e `sbloccata` |
 | `/api/giorno/N` | l'indizio, e solo dal giorno N |

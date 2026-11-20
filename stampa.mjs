@@ -98,11 +98,12 @@ async function qrInline(indirizzo) {
 
 /* ------------------------------------------------------------ le pagine */
 
-export async function biglietti(dati, base) {
+export async function biglietti(dati, base, chiave) {
   const righe = [];
   for (const g of giornIOrdinati(dati)) {
     const codice = String(g.codice).toUpperCase();
-    const svg = await qrInline(`${base}/t/${codice}`);
+    const indirizzo = `${base}/t/${codice}` + (chiave ? `?k=${encodeURIComponent(chiave)}` : "");
+    const svg = await qrInline(indirizzo);
     righe.push(`  <div class="biglietto">
     <span class="biglietto__giorno">${g.giorno}<small>dicembre</small></span>
     <div class="biglietto__qr">${svg}</div>
@@ -187,11 +188,16 @@ ${righe.join("\n")}
   );
 }
 
-export function indice() {
+export function indice(linkIngresso) {
   return pagina(
     "Roba da stampare",
     `<h1>Roba da stampare</h1>
 <p class="nota">Questa pagina esiste solo con <code>AVVENTO_STAMPA=1</code>. Su un server pubblico non c'è.</p>
+${linkIngresso ? `<div style="padding:12px 16px;margin:0 0 14px;border:1px solid rgba(168,128,74,.6);background:#f7ecd6">
+  <strong style="font-family:system-ui,sans-serif;font-size:8pt;letter-spacing:.16em;text-transform:uppercase;color:#7d6b57">link d'ingresso da mandarle</strong>
+  <div style="word-break:break-all;margin-top:6px;font-size:11pt">${esc(linkIngresso)}</div>
+  <div style="font-family:system-ui,sans-serif;font-size:8pt;color:#7d6b57;margin-top:6px">contiene la chiave: si usa una volta e resta in un cookie per 60 giorni</div>
+</div>` : ""}
 <a href="/stampa/biglietti.html" style="display:block;padding:14px 18px;margin:0 0 10px;text-decoration:none;color:#3b3226;border:1px solid rgba(168,128,74,.35);background:#fbf3e2">Biglietti per i cioccolatini<span style="display:block;font-family:system-ui,sans-serif;font-size:.8em;color:#7d6b57">25 quadrati da 50 mm con QR, giorno e codice</span></a>
 <a href="/stampa/promemoria.html" style="display:block;padding:14px 18px;margin:0 0 10px;text-decoration:none;color:#3b3226;border:1px solid rgba(168,128,74,.35);background:#fbf3e2">Promemoria dei nascondigli<span style="display:block;font-family:system-ui,sans-serif;font-size:.8em;color:#7d6b57">indovinello, codice e spazio per scrivere dove l'hai messo</span></a>
 <a href="/stampa/indovinelli.html" style="display:block;padding:14px 18px;text-decoration:none;color:#3b3226;border:1px solid rgba(168,128,74,.35);background:#fbf3e2">Indovinelli e codici<span style="display:block;font-family:system-ui,sans-serif;font-size:.8em;color:#7d6b57">spoiler completo, il copione per te</span></a>

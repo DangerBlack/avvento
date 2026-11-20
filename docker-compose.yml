@@ -11,6 +11,7 @@ services:
       # 0 = le pagine di stampa non esistono (consigliato se il sito è pubblico)
       AVVENTO_STAMPA: "${AVVENTO_STAMPA:-0}"
       AVVENTO_STAMPA_PAROLA: "${AVVENTO_STAMPA_PAROLA:-}"
+      AVVENTO_CHIAVE: "${AVVENTO_CHIAVE:-}"
       # AVVENTO_PROVA: "1"          # tutte le porticine aperte, per lavorarci
       # AVVENTO_OGGI: "2026-12-20"  # finge che sia un altro giorno
     volumes:

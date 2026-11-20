@@ -29,6 +29,11 @@ const PORTA = Number(process.env.PORT || 8080);
 const PROVA = process.env.AVVENTO_PROVA === "1";
 const ABILITA_STAMPA = process.env.AVVENTO_STAMPA === "1";
 const PAROLA_STAMPA = (process.env.AVVENTO_STAMPA_PAROLA || "").trim();
+const CHIAVE = (process.env.AVVENTO_CHIAVE || "").trim();
+const NOME_COOKIE_CHIAVE = "avvento_chiave";
+const IMPRONTA_CHIAVE = CHIAVE
+  ? createHash("sha256").update(CHIAVE).digest("hex").slice(0, 32)
+  : "";
 const NOME_COOKIE = "avvento_stampa";
 const IMPRONTA = PAROLA_STAMPA
   ? createHash("sha256").update(PAROLA_STAMPA).digest("hex").slice(0, 32)
@@ -197,6 +202,93 @@ function rispondiJson(res, stato, corpo) {
   res.end(testo);
 }
 
+function biscottoSicuro(req, valore) {
+  // Secure solo se la richiesta arriva in https (dietro Traefik, x-forwarded-proto)
+  const https = (req.headers["x-forwarded-proto"] || "").includes("https");
+  return `${valore}; Path=/; HttpOnly; SameSite=Lax` + (https ? "; Secure" : "");
+}
+
+// null = passa, altrimenti la risposta è già stata data
+function controllaChiave(req, res, url, percorso) {
+  if (!CHIAVE) return null;
+  if (biscotto(req, NOME_COOKIE_CHIAVE) === IMPRONTA_CHIAVE) return null;
+
+  const fornita = (url.searchParams.get("k") || "").trim();
+
+  if (fornita !== CHIAVE) {
+    // una pagina navigata mostra l'ingresso; API e file restano invisibili
+    const navigazione =
+      req.method === "GET" && (req.headers.accept || "").includes("text/html") && !percorso.startsWith("/api/");
+    if (!navigazione) {
+      return () => rispondiJson(res, 404, { errore: "non trovato" });
+    }
+    const messaggio = fornita ? "Questa chiave non apre niente." : "";
+    return () => {
+      const corpo = paginaIngresso(messaggio);
+      res.writeHead(200, {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store",
+        "content-length": Buffer.byteLength(corpo),
+      });
+      res.end(corpo);
+    };
+  }
+
+  const scadenza = new Date(Date.now() + 60 * 86400000).toUTCString();
+  const pulito = new URL(url);
+  pulito.searchParams.delete("k");
+  res.writeHead(302, {
+    location: pulito.pathname + (pulito.search || ""),
+    "set-cookie": biscottoSicuro(
+      req,
+      `${NOME_COOKIE_CHIAVE}=${IMPRONTA_CHIAVE}; Max-Age=${60 * 86400}; Expires=${scadenza}`
+    ),
+    "cache-control": "no-store",
+  });
+  res.end();
+  return () => {};
+}
+
+function paginaIngresso(errore) {
+  return `<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calendario</title>
+<style>
+  :root { --carta:#f4e9d5; --inchiostro:#3b3226; --oro:#a8804a; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100dvh; display:grid; place-items:center; padding:24px;
+         background:var(--carta); color:var(--inchiostro);
+         font-family:"EB Garamond", Georgia, serif; }
+  form { width:min(340px,100%); text-align:center; }
+  h1 { margin:0 0 6px; font-family:"Cormorant Garamond", Georgia, serif; font-weight:500; font-size:1.9rem; }
+  p { margin:0 0 22px; color:#7d6b57; font-size:.95rem; line-height:1.5; }
+  input { width:100%; padding:12px 14px; font-family:ui-monospace, monospace; font-size:.86rem;
+          text-align:center; color:var(--inchiostro); background:#fffdf6;
+          border:1px solid rgba(168,128,74,.45); border-radius:2px; }
+  input:focus { outline:none; border-color:var(--oro); }
+  button { margin-top:12px; width:100%; padding:11px; font-family:inherit; font-size:.8rem;
+           letter-spacing:.18em; text-transform:uppercase; color:#fdf6e6; background:var(--oro);
+           border:0; border-radius:2px; cursor:pointer; }
+  .errore { color:#8a3a33; font-size:.86rem; margin:0 0 16px; }
+  .nota { margin-top:18px; font-size:.78rem; color:#7d6b57; opacity:.8; }
+</style>
+</head>
+<body>
+  <form method="get" action="/" autocomplete="off">
+    <h1>Calendario</h1>
+    <p>Questa porta ha bisogno della sua chiave.</p>
+    ${errore ? '<p class="errore">' + esc(errore) + "</p>" : ""}
+    <input name="k" aria-label="chiave d'accesso" placeholder="incolla la chiave" spellcheck="false" />
+    <button type="submit">entra</button>
+    <p class="nota">La chiave è dentro il QR del primo cioccolatino.</p>
+  </form>
+</body>
+</html>`;
+}
+
 function biscotto(req, nome) {
   const grezzo = req.headers.cookie || "";
   for (const pezzo of grezzo.split(";")) {
@@ -221,11 +313,22 @@ function controllaStampa(req, res, url) {
   const scadenza = new Date(Date.now() + 30 * 86400000).toUTCString();
   res.writeHead(302, {
     location: url.pathname,
-    "set-cookie": `${NOME_COOKIE}=${IMPRONTA}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${30 * 86400}; Expires=${scadenza}`,
+    "set-cookie": biscottoSicuro(
+      req,
+      `${NOME_COOKIE}=${IMPRONTA}; Max-Age=${30 * 86400}; Expires=${scadenza}`
+    ),
     "cache-control": "no-store",
   });
   res.end();
   return () => {};
+}
+
+function esc(t) {
+  return String(t == null ? "" : t)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function htmlTesto(res, stato, testo) {
@@ -300,6 +403,9 @@ async function gestisci(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   let percorso = decodeURIComponent(url.pathname);
 
+  const chiaveMancante = controllaChiave(req, res, url, percorso);
+  if (chiaveMancante) return chiaveMancante();
+
   if (percorso.startsWith("/api/")) {
     if (req.method === "OPTIONS") {
       res.writeHead(204, { "access-control-allow-origin": "*", "access-control-allow-headers": "content-type", "access-control-allow-methods": "GET,POST" });
@@ -373,7 +479,7 @@ async function gestisci(req, res) {
   if (percorso === "/stampa" || percorso === "/stampa/") {
     const rifiuto = controllaStampa(req, res, url);
     if (rifiuto) return rifiuto();
-    return htmlTesto(res, 200, Stampa.indice());
+    return htmlTesto(res, 200, Stampa.indice(CHIAVE ? baseQr() + "/?k=" + encodeURIComponent(CHIAVE) : ""));
   }
 
   if (percorso === "/stampa/calendario.json") {
@@ -397,7 +503,7 @@ async function gestisci(req, res) {
   }
 
   const pagine = {
-    "/stampa/biglietti.html": () => Stampa.biglietti(dati, baseQr()),
+    "/stampa/biglietti.html": () => Stampa.biglietti(dati, baseQr(), CHIAVE),
     "/stampa/promemoria.html": () => Stampa.promemoria(dati),
     "/stampa/indovinelli.html": () => Stampa.indovinelli(dati),
   };
@@ -492,6 +598,7 @@ server.listen(PORTA, () => {
   console.log("\n  anno:  " + dati.anno);
   if (OGGI_FINTO) console.log("  oggi:  " + OGGI_FINTO + " (simulato)");
   if (PROVA) console.log("  prova: tutte le porticine aperte");
+  console.log("  chiave: " + (CHIAVE ? "attiva (ingresso ?k=…)" : "NESSUNA — il sito è aperto a chiunque"));
   if (ABILITA_STAMPA) {
     console.log("  stampa: http://localhost:" + PORTA + "/stampa" + (PAROLA_STAMPA ? "?password=…" : ""));
     if (!PAROLA_STAMPA) console.log("          (senza AVVENTO_STAMPA_PAROLA la pagina è aperta a chiunque la raggiunga)");

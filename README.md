@@ -168,21 +168,35 @@ After=network.target
 
 [Service]
 WorkingDirectory=%h/avvento
+# le variabili (compresa la password) stanno fuori dal file del servizio
+EnvironmentFile=%h/.config/avvento.env
 ExecStart=/usr/bin/node server.js
-Environment=PORT=8477
-Environment=AVVENTO_STAMPA=1
-Environment=AVVENTO_STAMPA_PAROLA=cambiami
 Restart=always
+RestartSec=2
 
 [Install]
 WantedBy=default.target
 ```
 
+`~/.config/avvento.env` (permessi `600`):
+
 ```bash
+PORT=8477
+AVVENTO_STAMPA=1
+AVVENTO_STAMPA_PAROLA=cambiami
+```
+
+```bash
+chmod 600 ~/.config/avvento.env
 systemctl --user daemon-reload
 systemctl --user enable --now avvento
 loginctl enable-linger "$USER"   # parte anche senza login
+journalctl --user -u avvento -f  # log
 ```
+
+Se Node è installato con nvm, `ExecStart` deve puntare al percorso esatto della versione
+(`~/.nvm/versions/node/vXX/bin/node`): systemd non conosce il `PATH` della tua shell, e dopo un
+aggiornamento di Node quel percorso va aggiornato a mano.
 
 ### Docker
 

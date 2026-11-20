@@ -131,6 +131,12 @@ Con `AVVENTO_STAMPA=1`:
 Si stampa al 100% (niente "adatta alla pagina"), su carta opaca: se è lucida il riflesso può
 impedire la lettura del QR.
 
+I QR sono disegnati a mano dai moduli (puntini, occhi arrotondati, inchiostro su crema) invece di
+essere i quadratini standard: restano leggibili perché la geometria degli occhi e la zona di
+silenzio sono esatte. Sono verificati con un decoder reale a 28 mm — la dimensione di stampa —
+non a occhio. Se cambi la chiave o l'indirizzo, l'URL si allunga e i moduli si infittiscono:
+rifai la prova prima di stampare.
+
 Se aggiungi `AVVENTO_STAMPA_PAROLA`, tutto quanto sopra risponde solo dopo aver visitato
 `/stampa?password=quella` una volta: lascia un cookie per 30 giorni e ripulisce l'indirizzo.
 Senza password, o con quella sbagliata, risponde **404** — non 401, così non rivela che esiste.

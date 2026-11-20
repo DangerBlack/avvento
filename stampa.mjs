@@ -41,7 +41,7 @@ const stile = `
   .biglietto__giorno { font-size:11pt; line-height:1; text-align:center; }
   .biglietto__giorno small { display:block; font-family:system-ui, sans-serif; font-size:4.4pt;
                letter-spacing:0.28em; text-transform:uppercase; color:#a08a76; margin-top:1mm; }
-  .biglietto__qr { width:24mm; height:24mm; }
+  .biglietto__qr { width:28mm; height:28mm; }
   .biglietto__qr svg { width:100%; height:100%; display:block; }
   .biglietto__codice { font-family:system-ui, sans-serif; font-weight:700; font-size:7.6pt;
                letter-spacing:0.3em; text-indent:0.3em; }
@@ -82,15 +82,46 @@ ${corpo}
 async function qrInline(indirizzo) {
   try {
     const { default: QRCode } = await import("qrcode");
-    return await QRCode.toString(indirizzo, {
-      type: "svg",
-      errorCorrectionLevel: "M",
-      margin: 1,
-      width: 360,
-      color: { dark: "#241b18", light: "#fffdf8" },
-    });
+    const qr = QRCode.create(indirizzo, { errorCorrectionLevel: "Q" });
+    const n = qr.modules.size;
+    const dati = qr.modules.data;
+    const margine = 4;              // zona di silenzio: 4 moduli, come raccomandano tutti
+    const lato = n + margine * 2;
+    const buio = (x, y) => dati[y * n + x] === 1;
+
+    // i tre occhi: 7x7 agli angoli, con il quadratino interno
+    const inOcchio = (x, y) =>
+      (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8);
+
+    let pezzi = "";
+
+    // occhi arrotondati
+    const occhi = [
+      [0, 0],
+      [n - 7, 0],
+      [0, n - 7],
+    ];
+    for (const [ox, oy] of occhi) {
+      const X = ox + margine;
+      const Y = oy + margine;
+      // 7x7 pieno, poi 5x5 di carta, poi 3x3 pieno: geometria esatta, solo gli angoli arrotondati
+      pezzi += `<rect x="${X}" y="${Y}" width="7" height="7" rx="2" fill="#241b18"/>`;
+      pezzi += `<rect x="${X + 1}" y="${Y + 1}" width="5" height="5" rx="1.4" fill="#fffdf8"/>`;
+      pezzi += `<rect x="${X + 2}" y="${Y + 2}" width="3" height="3" rx="0.8" fill="#241b18"/>`;
+    }
+
+    // puntini, con raggio appena sotto metà modulo: restano separati ma pieni
+    const r = 0.47;
+    for (let y = 0; y < n; y++) {
+      for (let x = 0; x < n; x++) {
+        if (!buio(x, y) || inOcchio(x, y)) continue;
+        pezzi += `<circle cx="${x + margine + 0.5}" cy="${y + margine + 0.5}" r="${r}" fill="#241b18"/>`;
+      }
+    }
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${lato} ${lato}" shape-rendering="geometricPrecision">` +
+      `<rect width="${lato}" height="${lato}" fill="#fffdf8"/>${pezzi}</svg>`;
   } catch (e) {
-    // senza la libreria la pagina resta utile: c'è il codice da dettare
     return `<div style="font-size:7pt;line-height:1.2;text-align:center;padding:2mm">
       QR non disponibile<br /><span style="font-size:6pt">(${esc(e.message)})</span></div>`;
   }
